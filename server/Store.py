@@ -19,16 +19,19 @@ class Store():
             pass
     
     
-    def queue_message(user, message):
-        if pending_messages.has_key(to_user):
-            pending_messages[to_user].append(message)    
+    # TODO right now from_user isn't included, since it isn't in the spec
+    # and complicates things. If a user wanted to be identified, they could 
+    # include their username in a message. Otherwise it's anonymous.
+    def queue_message(self, from_user, to_user, message):
+        if self.pending_messages.has_key(to_user):
+            self.pending_messages[to_user].append(message)    
         else:
-            pending_messages[to_user] = [message]
+            self.pending_messages[to_user] = [message]
     
     
-    def dequeue_message(user, message):
-        if pending_messages.has_key(user):
-            pending_messages[user].remove(message) # lot of string matching :(
+    def dequeue_message(self, from_user, to_user, message):
+        if self.pending_messages.has_key(to_user):
+            self.pending_messages[to_user].remove(message) # lot of string matching :(
         else:
             # TODO handle faulty dequeue?
             pass

@@ -2,29 +2,85 @@ from protocol_strings import *
 from struct import pack, unpack
 
 def login(connection):
-    username = raw_input('Login requires a username (max 8 alphanumeric characters): ')
-    while len(username) > 10:
-        username = raw_input('Username too long (max 8 alphanumeric characters). Please try again: ')
+    """
+    Send user request to login to an already existing account based on the provided username.
+    """
+    # Get username
+    username = raw_input('Login requires a username: ')
+    while len(username) > 32:
+        username = raw_input('Username too long (max 32 alphanumeric characters). Please try again: ')
 
-    msg = pack('!I', CREATE_ACCOUNT) + pack('!8p', username)
+    # Pack wire message and send it
+    msg = pack('!I', LOGIN_REQUEST) + pack('!32s', username)
     send_wire_message(connection, msg)
     return
 
 def create_account(connection):
-    pass
+    """
+    Send a request to creating a new account with the username provided by the user.
+    """
+    # Get username
+    username = raw_input('Registering a new account requires a new unique username (max 32 characters): ')
+    while len(username) > 32:
+        username = raw_input('Username too long (max 32 characters). Please try again: ')
+
+    # Pack wire message and send it
+    msg = pack('!I', CREATE_ACCOUNT) + pack('!32s', username)
+    send_wire_message(connection, msg)
+    return
 
 def list_accounts(connection):
-    pass
+    """
+    Send a request for the list of all accounts, with an optional wildcard for matching account usernames.
+    """
+    # Get the wildcard
+    wildcard = raw_input('Enter a wildcard (max 32 characters) for retrieving usernames (optional) and hit enter: ')
+
+    # Pack wire message and send it
+    msg = pack('!I', LIST_ACCOUNTS) + pack('!32s', wildcard)
+    send_wire_message(connection, msg)
+    return
 
 def send_message(connection):
-    pass
+    """
+    Send the provided message to the specified recipient from this account
+    """
+    # Get the username of the intended recipient
+    recipient = raw_input('Recipient: ')
+    while len(recipient) > 32:
+        recipient = raw_input('Username too long (max 32 characters). Please try again: ')
+
+    # Get the message
+    content = raw_input('Message Content (max 100 characters): ')
+    while len(content) > 100:
+        content = raw_input('Message too long (max 100 characters). Please try again: ')
+
+    msg = pack('!I', SEND_MESSAGE) + pack('!32s', recipient) + pack('!100s', content)
+    return
 
 def delete_account(connection):
-    pass
+    """
+    Send a request to delete the current account, with user option of forcing deletion
+    """
+    # Get user option choice
+    force = raw_input('Force deletion? [y/n/c]: ')
+    force = force.strip()
+
+    force_bool = False
+    # Parse the argument
+    if force == 'y':
+        force_bool = True
+    elif force == 'n':
+        force_bool = False
+    elif force == 'c':
+        return False
+
+    # Send the wire message
+    msg = pack('!I', DELETION_REQUEST) + pack('?', force_bool)
+    return True
 
 def send_wire_message(connection, wire_message):
     try:
-        print 'Sending ' + wire_message
         connection.send(wire_message)
     except:
         print 'Unable to send message; connection closed'

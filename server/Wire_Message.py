@@ -1,4 +1,3 @@
-import protocol_strings
 
 class Wire_Message():
     # TODO documentation
@@ -11,10 +10,10 @@ class Wire_Message():
         self.header = header
         self.payload = payload
     
-    def user(): # TODO is this the best way to do this?
+    def user(self): # TODO is this the best way to do this?
         return self.payload["username"]
     
-    def __str__():
+    def __str__(self):
         print self.username()
         print header
         print payload

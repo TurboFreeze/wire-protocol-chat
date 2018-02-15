@@ -22,7 +22,7 @@ class Controller():
     def __init__(self, host, port):
         self.host = host
         self.port = port
-        self.model = Model_262(self)
+        self.model = Model_262()
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print 'Socket created'
  
@@ -52,3 +52,8 @@ class Controller():
             print 'Connected with ' + address[0] + ':' + str(address[1])
              
         self.server_socket.close()
+    
+    
+    # TODO periodically check the model for pending messages to logged-in accounts
+    # watch out for double sends if we haven't received a confirmation yet.
+    

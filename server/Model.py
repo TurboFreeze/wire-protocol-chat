@@ -1,24 +1,18 @@
 from protocol_strings import *
 from Store import Store
+from Wire_Message import Wire_Message
 
 class Model_262():
     """TODO documentation"""
     
     data = None
     
-    def __init__(self, controller):
-        
-        print "Initializing Model..."
-        self.controller = controller
+    def __init__(self):
         self.data = self.load_data()
-    
-    # TODO periodically check for and send pending messages to logged-in accounts
-    # watch out for double sends if we haven't received a confirmation yet.
-    
     
     # takes in a Wire_Message object and returns an optional Wire_Message object
     # for the controller to deal with.
-    def interpret(msg):
+    def interpret(self, msg, session_id):
         ret_payload = {}
         
         # python doesn't have switch statements :(
@@ -30,25 +24,26 @@ class Model_262():
             if self.data.usernames.has_key(msg.user()):
                 # Error: username already exists
                 ret_payload["username"] = msg.user()
-                return Wire_Message(CREATE_FAILURE, payload)
+                return Wire_Message(CREATE_FAILURE, ret_payload)
             else:
                 self.data.usernames[msg.user()] = True 
                 ret_payload["username"] = msg.user()
-                return Wire_Message(CREATE_SUCCESS, payload)
+                return Wire_Message(CREATE_SUCCESS, ret_payload)
 
         elif msg.header == LOGIN_REQUEST:
             # The server has received a request to log in.
             # check the payload to make sure the username exists,
             # (handle already logged in), and execute a login in the model.
-            # Then tell the controller to fire off a LOGIN_RESPONSE
+            # Then tell the controller to fire off a login response
             # if there are queued messages for this user, deliver them.
             
-            if self.data.usernames.has_key(payload):
+            if self.data.usernames.has_key(msg.user()):
                 # user already has an account, no problem just log 'em in
-                if self.data.active_sessions[msg.user()] == session_id:
+                if (self.data.active_sessions.has_key(msg.user()) and 
+                    self.data.active_sessions[msg.user()] == session_id):
                     # user was already logged in, just return success.
                     ret_payload["username"] = msg.user()
-                    return Wire_Message(LOGIN_SUCCESS, payload)
+                    return Wire_Message(LOGIN_SUCCESS, ret_payload)
                 else:
                     # user was not already logged in, let's update their session
                     self.data.active_sessions[msg.user()] = session_id
@@ -60,12 +55,12 @@ class Model_262():
                     else:
                         # no pending messages, just return success
                         ret_payload["username"] = msg.user()
-                        return Wire_Message(LOGIN_SUCCESS, payload)
+                        return Wire_Message(LOGIN_SUCCESS, ret_payload)
                         
             else:
                 # user does not have an account! return failure.
                 ret_payload["username"] = msg.user()
-                return Wire_Message(LOGIN_FAILURE, payload)
+                return Wire_Message(LOGIN_FAILURE, ret_payload)
         
         elif msg.header == LIST_ACCOUNTS:
             # The server has received a request to LIST_ACCOUNTS,
@@ -81,7 +76,7 @@ class Model_262():
             payload["accounts"] = account_list
             # payload["wildcard"] = msg.payload["wildcard"]
             
-            return Wire_Message(ACCOUNT_LIST, payload)
+            return Wire_Message(ACCOUNT_LIST, ret_payload)
             
         
         elif msg.header == SEND_MESSAGE:
@@ -108,19 +103,19 @@ class Model_262():
                     self.data.queue_message(to_user, msg.payload["message"])
                     
                     # TODO message hash?
-                    payload["message"] = msg.payload["message"]
-                    return Wire_Message(MESSAGE_PENDING, payload)
+                    ret_payload["message"] = msg.payload["message"]
+                    return Wire_Message(MESSAGE_PENDING, ret_payload)
                     
                 else:
                     # recipient doesn't exist, fire controller
-                    payload["to"] = to_user
-                    payload["from"] = from_user
-                    return Wire_Message(MESSAGE_FAILURE, payload)
+                    ret_payload["to"] = to_user
+                    ret_payload["from"] = from_user
+                    return Wire_Message(MESSAGE_FAILURE, ret_payload)
             else:
                 # improper sender - isn't logged in!
                 # (includes "account doesn't exist")
                 payload["username"] = msg.user()
-                return Wire_Message(LOGIN_FAILURE, payload)
+                return Wire_Message(LOGIN_FAILURE, ret_payload)
             
         
         elif msg.header == MESSAGE_RECEIPT:
@@ -129,7 +124,7 @@ class Model_262():
             self.data.dequeue_message(msg.user(), msg.payload["message"])
             
         
-        elif msg.header == ACCOUNT_DELETION_REQUEST:
+        elif msg.header == DELETION_REQUEST:
             # A user has requested to delete the account
             # if there are no pending messages for him/her, execute and send a 
             # ACCOUNT_DELETION_RESPONSE
@@ -144,28 +139,29 @@ class Model_262():
             
             forced = msg.payload["forced"] # True/False
             
-            if pending_messages.has_key(msg.user()) and len(pending_messages[payload["username"]]) > 0:
+            if (self.data.pending_messages.has_key(msg.user()) and 
+                len(self.data.pending_messages[payload["username"]]) > 0):
                 # there are pending messages.
                 if forced:
-                    pending_messages[msg.user()] = None
-                    usernames[msg.user()] = None
-                    active_sessions[msg.user()] = None
+                    self.data.pending_messages[msg.user()] = None
+                    self.data.usernames[msg.user()] = None
+                    self.data.active_sessions[msg.user()] = None
 
-                    payload["username"] = msg.user()
-                    return Wire_Message(DELETION_SUCCESS, payload)
+                    ret_payload["username"] = msg.user()
+                    return Wire_Message(DELETION_SUCCESS, ret_payload)
                 else:
                     # Error! you have pending messages.
-                    payload["username"] = msg.user()
-                    return Wire_Message(DELETION_FAILURE, payload)
+                    ret_payload["username"] = msg.user()
+                    return Wire_Message(DELETION_FAILURE, ret_payload)
                     
             else:
                 # No pending messages, go ahead with deletion
-                pending_messages[msg.user()] = None
-                usernames[msg.user()] = None
-                active_sessions[msg.user()] = None
+                self.data.pending_messages[msg.user()] = None
+                self.data.usernames[msg.user()] = None
+                self.data.active_sessions[msg.user()] = None
 
-                payload["username"] = msg.user()
-                return Wire_Message(DELETION_SUCCESS, payload)
+                ret_payload["username"] = msg.user()
+                return Wire_Message(DELETION_SUCCESS, ret_payload)
         
         else:
             # TODO default

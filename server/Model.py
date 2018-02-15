@@ -1,6 +1,7 @@
 from protocol_strings import *
 from Store import Store
 from Wire_Message import Wire_Message
+import re # regex for ACCOUNT_LIST
 
 class Model_262():
     """TODO documentation"""
@@ -69,14 +70,12 @@ class Model_262():
             # fire off a ACCOUNT_LIST message with the relevant data
             
             account_list = []
-            for key, data in enumerate(self.data.usernames):
-                # TODO if username matches wildcard:
-                # msg.payload["wildcard"]
-                account_list.append(key)
+            for key in self.data.usernames.keys():
+                if re.match(msg.payload["wildcard"], key) != None:
+                    account_list.append(key)
             
-            payload["accounts"] = account_list
-            # payload["wildcard"] = msg.payload["wildcard"]
-            
+            ret_payload["accounts"] = account_list
+            ret_payload["wildcard"] = msg.payload["wildcard"]
             return Wire_Message(ACCOUNT_LIST, ret_payload)
             
         
@@ -140,10 +139,13 @@ class Model_262():
             # return ACCOUNT_DELETION_RESPONSE with the relevant 
             # warning and do not delete.
             
-            forced = msg.payload["forced"] # True/False
+            forced = False
+            if msg.payload.has_key("forced"):
+                forced = msg.payload["forced"]
+            
             
             if (self.data.pending_messages.has_key(msg.user()) and 
-                len(self.data.pending_messages[payload["username"]]) > 0):
+                len(self.data.pending_messages[msg.user()]) > 0):
                 # there are pending messages.
                 if forced:
                     self.data.pending_messages[msg.user()] = None

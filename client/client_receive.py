@@ -2,10 +2,15 @@ from protocol_strings import *
 from struct import pack, unpack
 
 def create_success(content):
-    pass
+    """
+    Response to user if successfully created user
+    """
+    print 'Account creation was successful for: '
+    print 'You can now login or create another account'
 
 def create_failure(content):
-    pass
+    print 'Account creation was not successful for: '
+    print 'This username might already be taken.'
 
 def login_success(content):
     pass

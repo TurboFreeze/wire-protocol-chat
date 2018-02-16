@@ -1,6 +1,7 @@
 from client_receive import *
 from protocol_strings import *
 from struct import pack, unpack
+import thread
 
 def login(connection):
     """
@@ -80,9 +81,9 @@ def delete_account(connection):
     msg = pack('!I', DELETION_REQUEST) + pack('?', force_bool)
     return
 
-def send_wire_message(connection, wire_message):
+def send_wire_message(socket, wire_message):
     try:
-        connection.send(wire_message)
+        socket.send(wire_message)
     except:
         print 'Unable to send message; connection closed'
         sys.exit()

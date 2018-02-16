@@ -1,5 +1,6 @@
 from client_send import *
 import socket
+import os
 import sys
 
 logged_in = False
@@ -46,7 +47,7 @@ def prompt_user():
         '''
         # Take input
         option = raw_input('Select an option: ')
-        print '\n'
+        os.system('clear')  
         option_num = -1
         try:
             option_num = int(option)
@@ -80,7 +81,7 @@ def prompt_user():
     '''
     # Take input
     option = raw_input('Select an option: ')
-    print '\n'
+    os.system('clear')
     option_num = -1
     try:
         option_num = int(option)
@@ -112,7 +113,7 @@ def get_response():
     except:
         print 'Unable to send message; connection closed'
         sys.exit()
-    header = unpack('!I', received[0:4])
+    header = unpack('!I', received[0:4])[0]
     response_headers[header](received)
 
 def listen(lock):
@@ -134,9 +135,9 @@ def listen(lock):
             else:
                 sender = received.unpack('!32s', received[4:36])
                 content = received.unpack('!100s', received[36:])
-                print('[MESSAGE FROM ' + sender ']: ' + content)
+                print('[MESSAGE FROM ' + sender + ']: ' + content)
                 receipt_msg = pack('!I', MESSAGE_RECEIPT);
-                send_message(receipt_msg)
+                send_wire_message(client_socket, receipt_msg)
 
 def init():
     """

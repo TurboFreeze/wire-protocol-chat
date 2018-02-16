@@ -18,6 +18,7 @@ MESSAGE_RECEIPT             = 0x01010
 DELETION_REQUEST            = 0x01011
 DELETION_SUCCESS            = 0x01100
 DELETION_FAILURE            = 0x10010 # added
+PULL_MESSAGES               = 0x10100 # added
 
 
 # For debugging:

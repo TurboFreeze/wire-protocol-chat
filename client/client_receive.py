@@ -23,16 +23,32 @@ def login_failure(content):
     return
 
 def out_list_accounts(content):
-    pass
+    wildcard = unpack('!32s', content[4:36])[0]
+    number = unpack('!I', content[36:40])[0]
+    print 'The wildcard used was: ' + wildcard
+    print 'The list of users found with this wildcard are:'
+    for i in range(number):
+        start = 40 + i * 32
+        end = 40 + (i + 1) * 32
+        print unpack('!32s', content[start:end])[0]
+    return
 
 def message_success(content):
     pass
 
+def message_received(content):
+    recipient = unpack('!32s', content[4:36])
+    message = unpack('!100s', content[36:])[0]
+    print('\n[MESSAGE RECEIVED]: ' + message)
+    return
+
 def message_failure(content):
-    pass
+    print 'Receiving user does not exist.'
+    return
 
 def message_pending(content):
-    pass
+    print 'The message has been sent and the recipient will see it immediately/the next they log in.'
+    return
 
 def deletion_success(content):
     print 'Account deletion was successful for: ' + unpack('!32s', content[4:])[0]

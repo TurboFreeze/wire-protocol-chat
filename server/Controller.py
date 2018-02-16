@@ -12,6 +12,7 @@ from struct import pack, unpack
 import socket
 import sys
 import thread
+import time
 
 
 def send_wire_message(connection, wire_message):
@@ -27,11 +28,29 @@ def prep_response(content):
         response += pack('!32s', content.payload['username'])
     if content.header == LOGIN_SUCCESS or content.header == LOGIN_FAILURE:
         response += pack('!32s', content.payload['username'])
+    if content.header == ACCOUNT_LIST:
+        # Pack the wildcard
+        response += pack('!32s', content.payload['wildcard'])
+        # First pack the number of users in the list being returned
+        response += pack('!I', len(content.payload['accounts']))
+        # Loop through each username in the list and pack it
+        for user in content.payload['accounts']:
+            response += pack('!32s', user)
     if content.header == DELETION_SUCCESS or content.header == DELETION_FAILURE:
         response += pack('!32s', content.payload['username'])
+    if content.header == DISTRIBUTE_MESSAGE:
+        response += pack('!32s', content.payload['username']) + pack('!100s', content.payload['message'])
     return response
 
-def manage(connection, loc, session_id, model):
+# def push_messages(connection, lock, model):
+#     while True:
+#         time.sleep(0.5)
+#         messages = model.get_pending_messages()
+#         for i i
+
+def manage(connection, lock, session_id, model):
+    # lock = thread.allocate_lock()
+    # thread.start_new_thread(push_messages, (clientsocket, lock, model))
     while True:
         try:
             received = connection.recv(1024)
@@ -41,23 +60,45 @@ def manage(connection, loc, session_id, model):
 
         if len(received) >= 4:
             header = unpack('!I', received[0:4])[0]
+            print header
             payload = {}
             if header == CREATE_ACCOUNT:
                 payload['username'] = unpack('!32s', received[4:])[0]
             elif header == LOGIN_REQUEST:
                 payload['username'] = unpack('!32s', received[4:])[0]
             elif header == LIST_ACCOUNTS:
-                pass
+                payload['wildcard'] = unpack('!32s', received[4:])[0]
             elif header == SEND_MESSAGE:
-                pass
+                payload['from'] = unpack('!32s', received[4:36])[0]
+                payload['to'] = unpack('!32s', received[36:68])[0]
+                payload['message'] = unpack('!100s', received[68:])[0]
             elif header == DELETION_REQUEST:
                 payload['username'] = unpack('!32s', received[4:36])[0]
                 payload['forced'] = unpack('?', received[36:])[0]
+            elif header == MESSAGE_RECEIPT:
+                payload['username'] = unpack('!32s', received[4:36])[0]
+                payload['from_user'] = 'Anon'
+                payload['message'] = unpack('!100s', received[36:])[0]
+            elif header == PULL_MESSAGES:
+                try:
+                    username = unpack('!32s', received[4:])[0]
+                    messages = model.get_messages(username)
+                    for m in messages:
+                        h = DISTRIBUTE_MESSAGE
+                        payload = {}
+                        payload['username'] = username
+                        payload['message'] = m
+                        response = prep_response(Wire_Message(h, payload))
+                        send_wire_message(connection, response)
+                except:
+                    continue
+                continue
             else:
                 print 'Unrecognized protocol operation'
 
-            response = prep_response(model.interpret(Wire_Message(header, payload), session_id))
-            send_wire_message(connection, response)
+            if header != MESSAGE_RECEIPT:
+                response = prep_response(model.interpret(Wire_Message(header, payload), session_id))
+                send_wire_message(connection, response)
 
 class Controller():
     # TODO all this socket stuff will have to be cleaned up

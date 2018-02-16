@@ -2,6 +2,7 @@ from client_send import *
 import socket
 import os
 import sys
+import time
 
 logged_in = False
 logged_in_user = None
@@ -18,7 +19,8 @@ response_headers = {  CREATE_SUCCESS: create_success,
                     MESSAGE_FAILURE: message_failure,
                     MESSAGE_PENDING: message_pending,
                     DELETION_SUCCESS: deletion_success,
-                    DELETION_FAILURE: deletion_failure
+                    DELETION_FAILURE: deletion_failure,
+                    DISTRIBUTE_MESSAGE: message_received
            }
 
 def exit_program():
@@ -35,10 +37,12 @@ def prompt_user():
     Taking user input and calling appropriate function
     """
     valid = False
+    time.sleep(1)
     while not valid:
         # User must first login or create account
         if not logged_in:
             print '''
+
             ***************
             Welcome to Chat.
             You are not logged in.
@@ -75,6 +79,8 @@ def prompt_user():
             return
 
         # If logged in, choose one of these options
+        print ''
+        print '        ***************'
         print '        Welcome ' + logged_in_user
         print'''        Select one of the following options:
                 1 - SEND MESSAGE
@@ -95,7 +101,7 @@ def prompt_user():
 
         # Handle various options
         if option_num == 1:
-            send_message(client_socket)
+            send_message(client_socket, logged_in_user)
             return
         if option_num == 2:
             delete_account(client_socket, logged_in_user)
@@ -104,53 +110,50 @@ def prompt_user():
             get_list_accounts(client_socket)
             return
         if option_num == 0:
-            exit_program(client_socket)
+            exit_program()
         print 'Please enter a single number corresponding to one of the available options'
         continue
     return
 
-def get_response():
+def listen(lock, connection):
     """
-    Keep listening for server response
-    """
-    global logged_in
-    global logged_in_user
-    try:
-        received = client_socket.recv(1024)
-    except:
-        print 'Unable to send message; connection closed'
-        sys.exit()
-    header = unpack('!I', received[0:4])[0]
-    if header == LOGIN_SUCCESS:
-        logged_in = True
-        logged_in_user = unpack('!32s', received[4:])[0]
-    if header == DELETION_SUCCESS:
-        logged_in = False
-        logged_in_user = None
-    response_headers[header](received)
-
-def listen(lock):
-    """
-    Separate thread for clients to continuously listen for incoming messages
+    Separate thread for clients to continuously listen for incoming messages and responses
     """
     while True:
         try:
-            received = conn.recv(1024)
+            received = connection.recv(1024)
         except:
-            # Exit if no connection
-            thread.exit()
+            print 'Unable to send message; connection closed'
+            sys.exit()
 
-        if len(netbuffer) >= 4:
+        if len(received) >= 4:
             # Only receive messages
-            header = received.unpack('!I', received[0:4])
-            if header != DISTRIBUTE_MESSAGE:
-                continue
-            else:
-                sender = received.unpack('!32s', received[4:36])
-                content = received.unpack('!100s', received[36:])
-                print('[MESSAGE FROM ' + sender + ']: ' + content)
-                receipt_msg = pack('!I', MESSAGE_RECEIPT);
-                send_wire_message(client_socket, receipt_msg)
+            global logged_in
+            global logged_in_user
+            header = unpack('!I', received[0:4])[0]
+            if header == LOGIN_SUCCESS:
+                logged_in = True
+                logged_in_user = unpack('!32s', received[4:])[0]
+            if header == DELETION_SUCCESS:
+                logged_in = False
+                logged_in_user = None
+            if header == DISTRIBUTE_MESSAGE:
+                receipt_msg = pack('!I', MESSAGE_RECEIPT) + received[4:]
+                try:
+                    connection.send(receipt_msg)
+                except:
+                    print 'Unable to send message; connection closed'
+                    sys.exit()
+            response_headers[header](received)
+
+def pull(lock, connection):
+    while True:
+        time.sleep(0.5)
+        if logged_in_user != None:
+            try:
+                connection.send(pack('!I', PULL_MESSAGES) + pack('!32s', logged_in_user))
+            except:
+                pass
 
 def init():
     """
@@ -172,14 +175,15 @@ def init():
 
     os.system('clear')
 
-    # Start a new thread to continuously listen for incoming messages
-    # lock = thread.allocate_lock()
-    # thread.start_new_thread(listen, (lock))
+    # Start a new thread to continuously listen for incoming messages and responses
+    lock = thread.allocate_lock()
+    thread.start_new_thread(listen, (lock, client_socket))
 
+    lock2 = thread.allocate_lock()
+    thread.start_new_thread(pull, (lock2, client_socket))
     # Loop
     while True:
         prompt_user()
-        get_response()
 
 if __name__ == '__main__':
     init()

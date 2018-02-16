@@ -43,7 +43,7 @@ def get_list_accounts(connection):
     send_wire_message(connection, msg)
     return
 
-def send_message(connection):
+def send_message(connection, username):
     """
     Send the provided message to the specified recipient from this account
     """
@@ -57,7 +57,7 @@ def send_message(connection):
     while len(content) > 100:
         content = raw_input('Message too long (max 100 characters). Please try again: ')
 
-    msg = pack('!I', SEND_MESSAGE) + pack('!32s', recipient) + pack('!100s', content)
+    msg = pack('!I', SEND_MESSAGE) + pack('!32s', username) + pack('!32s', recipient) + pack('!100s', content)
     send_wire_message(connection, msg)
     return
 

@@ -1,3 +1,4 @@
+from client_receive import *
 from protocol_strings import *
 from struct import pack, unpack
 
@@ -29,7 +30,7 @@ def create_account(connection):
     send_wire_message(connection, msg)
     return
 
-def list_accounts(connection):
+def get_list_accounts(connection):
     """
     Send a request for the list of all accounts, with an optional wildcard for matching account usernames.
     """
@@ -63,21 +64,21 @@ def delete_account(connection):
     Send a request to delete the current account, with user option of forcing deletion
     """
     # Get user option choice
-    force = raw_input('Force deletion? [y/n/c]: ')
-    force = force.strip()
-
-    force_bool = False
-    # Parse the argument
-    if force == 'y':
-        force_bool = True
-    elif force == 'n':
-        force_bool = False
-    elif force == 'c':
-        return False
+    force_bool = None
+    while force_bool == None:
+        force = raw_input('Force deletion? [y/n/c]: ')
+        force = force.strip()
+        # Parse the argument
+        if force == 'y':
+            force_bool = True
+        elif force == 'n':
+            force_bool = False
+        else:
+            print "Not recognized. Enter 'y' for yes, 'n' for no."
 
     # Send the wire message
     msg = pack('!I', DELETION_REQUEST) + pack('?', force_bool)
-    return True
+    return
 
 def send_wire_message(connection, wire_message):
     try:

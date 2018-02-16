@@ -7,6 +7,18 @@ logged_in = False
 # Create socket and attempt connection
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+response_headers = {  CREATE_SUCCESS: create_success,
+                    CREATE_FAILURE: create_failure,
+                    LOGIN_SUCCESS: login_success,
+                    LOGIN_FAILURE: login_failure,
+                    ACCOUNT_LIST: out_list_accounts,
+                    MESSAGE_SUCCESS: message_success,
+                    MESSAGE_FAILURE: message_failure,
+                    MESSAGE_PENDING: message_pending,
+                    DELETION_SUCCESS: deletion_success,
+                    DELETION_FAILURE: deletion_failure
+           }
+
 def exit_program():
     """
     Exiting the program involves closing connection and outputting good bye message
@@ -50,7 +62,7 @@ def prompt_user():
             create_account(client_socket)
             return
         if option_num == 3:
-            list_accounts(client_socket)
+            get_list_accounts(client_socket)
             return
         if option_num == 0:
             exit_program()
@@ -84,16 +96,47 @@ def prompt_user():
         delete_account(client_socket)
         return
     if option_num == 3:
-        list_accounts(client_socket)
+        get_list_accounts(client_socket)
         return
     if option_num == 0:
         exit_program(client_socket)
     print 'Please enter a single number corresponding to one of the available options'
     return
 
-def listen():
+def get_response():
+    """
+    Keep listening for server response
+    """
+    try:
+        received = client_socket.recv(1024)
+    except:
+        print 'Unable to send message; connection closed'
+        sys.exit()
+    header = unpack('!I', received[0:4])
+    response_headers[header](received)
+
+def listen(lock):
+    """
+    Separate thread for clients to continuously listen for incoming messages
+    """
     while True:
-        pass
+        try:
+            received = conn.recv(1024)
+        except:
+            # Exit if no connection
+            thread.exit()
+
+        if len(netbuffer) >= 4:
+            # Only receive messages
+            header = received.unpack('!I', received[0:4])
+            if header != DISTRIBUTE_MESSAGE:
+                continue
+            else:
+                sender = received.unpack('!32s', received[4:36])
+                content = received.unpack('!100s', received[36:])
+                print('[MESSAGE FROM ' + sender ']: ' + content)
+                receipt_msg = pack('!I', MESSAGE_RECEIPT);
+                send_message(receipt_msg)
 
 def init():
     """
@@ -113,10 +156,14 @@ def init():
         sys.exit()
     print 'Successfully connected to server at ' + host + ':' + port
 
+    # Start a new thread to continuously listen for incoming messages
+    # lock = thread.allocate_lock()
+    # thread.start_new_thread(listen, (lock))
+
     # Loop
     while True:
         prompt_user()
-        listen()
+        get_response()
 
 if __name__ == '__main__':
     init()

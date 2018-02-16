@@ -1,0 +1,71 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module client_receive</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>client_receive</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/macbook/dev/CS262/chat-app/client/client_receive.py">/Users/macbook/dev/CS262/chat-app/client/client_receive.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-create_failure"><strong>create_failure</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;user&nbsp;creation&nbsp;unsuccessful<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-create_success"><strong>create_success</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;successfully&nbsp;created&nbsp;user<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-deletion_failure"><strong>deletion_failure</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;deletion&nbsp;of&nbsp;account&nbsp;could&nbsp;not&nbsp;be&nbsp;performed<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-deletion_success"><strong>deletion_success</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;deletion&nbsp;of&nbsp;account&nbsp;was&nbsp;successful<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-login_failure"><strong>login_failure</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;login&nbsp;unsuccessful<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-login_success"><strong>login_success</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;login&nbsp;successful<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-message_failure"><strong>message_failure</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;a&nbsp;message&nbsp;could&nbsp;not&nbsp;be&nbsp;delivered<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-message_pending"><strong>message_pending</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;if&nbsp;message&nbsp;was&nbsp;successfully&nbsp;queued<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-message_received"><strong>message_received</strong></a>(content)</dt><dd><tt>Output&nbsp;message&nbsp;to&nbsp;client&nbsp;terminal&nbsp;upon&nbsp;receiving&nbsp;a&nbsp;message<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-message_success"><strong>message_success</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;upon&nbsp;successful&nbsp;sending&nbsp;of&nbsp;message<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-out_list_accounts"><strong>out_list_accounts</strong></a>(content)</dt><dd><tt>Response&nbsp;to&nbsp;user&nbsp;of&nbsp;list&nbsp;of&nbsp;accounts&nbsp;retrieved<br>
+:param&nbsp;content:&nbsp;contents&nbsp;of&nbsp;the&nbsp;packed&nbsp;wire&nbsp;message&nbsp;received&nbsp;from&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-pack"><strong>pack</strong></a>(...)</dt><dd><tt>Return&nbsp;string&nbsp;containing&nbsp;values&nbsp;v1,&nbsp;v2,&nbsp;...&nbsp;packed&nbsp;according&nbsp;to&nbsp;fmt.</tt></dd></dl>
+ <dl><dt><a name="-unpack"><strong>unpack</strong></a>(...)</dt><dd><tt>Unpack&nbsp;the&nbsp;string&nbsp;containing&nbsp;packed&nbsp;C&nbsp;structure&nbsp;data,&nbsp;according&nbsp;to&nbsp;fmt.<br>
+Requires&nbsp;len(string)&nbsp;==&nbsp;calcsize(fmt).</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACCOUNT_LIST</strong> = 272<br>
+<strong>CREATE_ACCOUNT</strong> = 1<br>
+<strong>CREATE_FAILURE</strong> = 4353<br>
+<strong>CREATE_SUCCESS</strong> = 16<br>
+<strong>DELETION_FAILURE</strong> = 65552<br>
+<strong>DELETION_REQUEST</strong> = 4113<br>
+<strong>DELETION_SUCCESS</strong> = 4352<br>
+<strong>DISTRIBUTE_MESSAGE</strong> = 4097<br>
+<strong>LIST_ACCOUNTS</strong> = 257<br>
+<strong>LOGIN_FAILURE</strong> = 4369<br>
+<strong>LOGIN_REQUEST</strong> = 17<br>
+<strong>LOGIN_SUCCESS</strong> = 256<br>
+<strong>MESSAGE_FAILURE</strong> = 65536<br>
+<strong>MESSAGE_PENDING</strong> = 65537<br>
+<strong>MESSAGE_RECEIPT</strong> = 4112<br>
+<strong>MESSAGE_SUCCESS</strong> = 4096<br>
+<strong>PULL_MESSAGES</strong> = 65792<br>
+<strong>SEND_MESSAGE</strong> = 273</td></tr></table>
+</body></html>

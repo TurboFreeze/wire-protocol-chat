@@ -4,12 +4,14 @@ import os
 import sys
 import time
 
+# Store info about current user within the client session
 logged_in = False
 logged_in_user = None
 
 # Create socket and attempt connection
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+# Mapping response codes to the appropriate handling function
 response_headers = {  CREATE_SUCCESS: create_success,
                     CREATE_FAILURE: create_failure,
                     LOGIN_SUCCESS: login_success,
@@ -27,7 +29,10 @@ def exit_program():
     """
     Exiting the program involves closing connection and outputting good bye message
     """
-    client_socket.close()
+    try:
+        client_socket.close()
+    except:
+        pass
     print 'Thank you for using chat. Good bye.'
     sys.exit()
 
@@ -38,6 +43,7 @@ def prompt_user():
     """
     valid = False
     time.sleep(1)
+    # Keep prompting user for valid input
     while not valid:
         # User must first login or create account
         if not logged_in:
@@ -118,19 +124,25 @@ def prompt_user():
 def listen(lock, connection):
     """
     Separate thread for clients to continuously listen for incoming messages and responses
+    :param lock: thread lock
+    :param connection: socket connection to listen from
     """
+    # Continuously listen for responses and messages from server
     while True:
+        # Get input
         try:
             received = connection.recv(1024)
         except:
             print 'Unable to send message; connection closed'
             sys.exit()
 
+        # Process wire message
         if len(received) >= 4:
-            # Only receive messages
             global logged_in
             global logged_in_user
+            # Unpack header
             header = unpack('!I', received[0:4])[0]
+            # Handle any responses back to server and save any changes in client state
             if header == LOGIN_SUCCESS:
                 logged_in = True
                 logged_in_user = unpack('!32s', received[4:])[0]
@@ -138,18 +150,28 @@ def listen(lock, connection):
                 logged_in = False
                 logged_in_user = None
             if header == DISTRIBUTE_MESSAGE:
+                # Tell server that message was received
                 receipt_msg = pack('!I', MESSAGE_RECEIPT) + received[4:]
                 try:
                     connection.send(receipt_msg)
                 except:
                     print 'Unable to send message; connection closed'
                     sys.exit()
+
+            # Map to appropriate function based in header
             response_headers[header](received)
 
 def pull(lock, connection):
+    """
+    Continuously pull for messages from server
+    :param lock: thread lock
+    :param connection: socket connection to send pull requests to
+    """
+    # Loop continuously with short pause between calls
     while True:
         time.sleep(0.5)
         if logged_in_user != None:
+            # Send pull request
             try:
                 connection.send(pack('!I', PULL_MESSAGES) + pack('!32s', logged_in_user))
             except:
@@ -166,6 +188,7 @@ def init():
     host = sys.argv[1]
     port = sys.argv[2]
 
+    # Connect to server with provided arguments
     try:
         client_socket.connect((host, int(port)))
     except socket.error as err:
@@ -179,6 +202,7 @@ def init():
     lock = thread.allocate_lock()
     thread.start_new_thread(listen, (lock, client_socket))
 
+    # Continuously send pull requests in separate thread
     lock2 = thread.allocate_lock()
     thread.start_new_thread(pull, (lock2, client_socket))
     # Loop

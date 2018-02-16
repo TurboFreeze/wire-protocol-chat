@@ -1,0 +1,73 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module client_send</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>client_send</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/macbook/dev/CS262/chat-app/client/client_send.py">/Users/macbook/dev/CS262/chat-app/client/client_send.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="thread.html">thread</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-create_account"><strong>create_account</strong></a>(connection)</dt><dd><tt>Send&nbsp;a&nbsp;request&nbsp;to&nbsp;creating&nbsp;a&nbsp;new&nbsp;account&nbsp;with&nbsp;the&nbsp;username&nbsp;provided&nbsp;by&nbsp;the&nbsp;user.<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;request&nbsp;to</tt></dd></dl>
+ <dl><dt><a name="-delete_account"><strong>delete_account</strong></a>(connection, username)</dt><dd><tt>Send&nbsp;a&nbsp;request&nbsp;to&nbsp;delete&nbsp;the&nbsp;current&nbsp;account,&nbsp;with&nbsp;user&nbsp;option&nbsp;of&nbsp;forcing&nbsp;deletion<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;request&nbsp;to<br>
+:param&nbsp;username:&nbsp;username&nbsp;of&nbsp;account&nbsp;to&nbsp;be&nbsp;deleted;&nbsp;also&nbsp;the&nbsp;same&nbsp;as&nbsp;sender&nbsp;of&nbsp;deletion&nbsp;request</tt></dd></dl>
+ <dl><dt><a name="-get_list_accounts"><strong>get_list_accounts</strong></a>(connection)</dt><dd><tt>Send&nbsp;a&nbsp;request&nbsp;for&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;accounts,&nbsp;with&nbsp;an&nbsp;optional&nbsp;wildcard&nbsp;for&nbsp;matching&nbsp;account&nbsp;usernames.<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;request&nbsp;to</tt></dd></dl>
+ <dl><dt><a name="-login"><strong>login</strong></a>(connection)</dt><dd><tt>Send&nbsp;user&nbsp;request&nbsp;to&nbsp;login&nbsp;to&nbsp;an&nbsp;already&nbsp;existing&nbsp;account&nbsp;based&nbsp;on&nbsp;the&nbsp;provided&nbsp;username.<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;request&nbsp;to</tt></dd></dl>
+ <dl><dt><a name="-pack"><strong>pack</strong></a>(...)</dt><dd><tt>Return&nbsp;string&nbsp;containing&nbsp;values&nbsp;v1,&nbsp;v2,&nbsp;...&nbsp;packed&nbsp;according&nbsp;to&nbsp;fmt.</tt></dd></dl>
+ <dl><dt><a name="-send_message"><strong>send_message</strong></a>(connection, username)</dt><dd><tt>Send&nbsp;the&nbsp;provided&nbsp;message&nbsp;to&nbsp;the&nbsp;specified&nbsp;recipient&nbsp;from&nbsp;this&nbsp;account<br>
+Recipient&nbsp;is&nbsp;prompted&nbsp;as&nbsp;input&nbsp;in&nbsp;this&nbsp;method&nbsp;while&nbsp;recipient's&nbsp;username&nbsp;is&nbsp;passed&nbsp;as&nbsp;parameter<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;request&nbsp;to<br>
+:param&nbsp;username:&nbsp;username&nbsp;of&nbsp;sender</tt></dd></dl>
+ <dl><dt><a name="-send_wire_message"><strong>send_wire_message</strong></a>(socket, wire_message)</dt><dd><tt>Reusable&nbsp;helper&nbsp;method&nbsp;to&nbsp;encapsulate&nbsp;sending&nbsp;of&nbsp;wire&nbsp;messages<br>
+:param&nbsp;socket:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;wire&nbsp;message&nbsp;to<br>
+:param&nbsp;wire_message:&nbsp;data&nbsp;packed&nbsp;according&nbsp;to&nbsp;wire&nbsp;protocol&nbsp;to&nbsp;be&nbsp;sent&nbsp;to&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-unpack"><strong>unpack</strong></a>(...)</dt><dd><tt>Unpack&nbsp;the&nbsp;string&nbsp;containing&nbsp;packed&nbsp;C&nbsp;structure&nbsp;data,&nbsp;according&nbsp;to&nbsp;fmt.<br>
+Requires&nbsp;len(string)&nbsp;==&nbsp;calcsize(fmt).</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACCOUNT_LIST</strong> = 272<br>
+<strong>CREATE_ACCOUNT</strong> = 1<br>
+<strong>CREATE_FAILURE</strong> = 4353<br>
+<strong>CREATE_SUCCESS</strong> = 16<br>
+<strong>DELETION_FAILURE</strong> = 65552<br>
+<strong>DELETION_REQUEST</strong> = 4113<br>
+<strong>DELETION_SUCCESS</strong> = 4352<br>
+<strong>DISTRIBUTE_MESSAGE</strong> = 4097<br>
+<strong>LIST_ACCOUNTS</strong> = 257<br>
+<strong>LOGIN_FAILURE</strong> = 4369<br>
+<strong>LOGIN_REQUEST</strong> = 17<br>
+<strong>LOGIN_SUCCESS</strong> = 256<br>
+<strong>MESSAGE_FAILURE</strong> = 65536<br>
+<strong>MESSAGE_PENDING</strong> = 65537<br>
+<strong>MESSAGE_RECEIPT</strong> = 4112<br>
+<strong>MESSAGE_SUCCESS</strong> = 4096<br>
+<strong>PULL_MESSAGES</strong> = 65792<br>
+<strong>SEND_MESSAGE</strong> = 273</td></tr></table>
+</body></html>

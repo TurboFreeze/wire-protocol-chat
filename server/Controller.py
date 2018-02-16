@@ -16,6 +16,11 @@ import time
 
 
 def send_wire_message(connection, wire_message):
+    """
+    Reusable helper method to encapsulate sending of wire messages
+    :param connection: connection to client to send wire message to
+    :param wire_message: contents of the packed wire message to be sent to client
+    """
     try:
         connection.send(wire_message)
     except:
@@ -23,7 +28,14 @@ def send_wire_message(connection, wire_message):
     return
 
 def prep_response(content):
+    """
+    Prepare server's response back to client correctly according to the wire protocol
+    :param content: Wire_Message object to be processed into wire message
+    :return: content object data packed as a wire message according to wire protocol
+    """
+    # Pack the header
     response = pack('!I', content.header)
+    # Pack the Wire_Message payloads as appropriate according to wire protocol
     if content.header == CREATE_SUCCESS or content.header == CREATE_FAILURE:
         response += pack('!32s', content.payload['username'])
     if content.header == LOGIN_SUCCESS or content.header == LOGIN_FAILURE:
@@ -42,15 +54,15 @@ def prep_response(content):
         response += pack('!32s', content.payload['username']) + pack('!100s', content.payload['message'])
     return response
 
-# def push_messages(connection, lock, model):
-#     while True:
-#         time.sleep(0.5)
-#         messages = model.get_pending_messages()
-#         for i i
-
 def manage(connection, lock, session_id, model):
-    # lock = thread.allocate_lock()
-    # thread.start_new_thread(push_messages, (clientsocket, lock, model))
+    """
+    Process requests and responses from the client by unpacking message encoded by wire protocol into Wire_Message object to be interpreted by the Model
+    :param connection: client connection from which to these requests are received
+    :param lock: thread lock
+    :param session_id: session id
+    :param model: model of class Model_262 that handles server logic for data after being processed in this message
+    """
+    # Continuously listen for client requests and responses
     while True:
         try:
             received = connection.recv(1024)
@@ -59,9 +71,10 @@ def manage(connection, lock, session_id, model):
             thread.exit()
 
         if len(received) >= 4:
+            # Unpack header
             header = unpack('!I', received[0:4])[0]
-            print header
             payload = {}
+            # Create payload of Wire_Message object according to header
             if header == CREATE_ACCOUNT:
                 payload['username'] = unpack('!32s', received[4:])[0]
             elif header == LOGIN_REQUEST:
@@ -83,6 +96,7 @@ def manage(connection, lock, session_id, model):
                 try:
                     username = unpack('!32s', received[4:])[0]
                     messages = model.get_messages(username)
+                    # Loop through all messages when pulling for a user
                     for m in messages:
                         h = DISTRIBUTE_MESSAGE
                         payload = {}
@@ -96,7 +110,9 @@ def manage(connection, lock, session_id, model):
             else:
                 print 'Unrecognized protocol operation'
 
+            # Do not respond to MESSAGE_RECEIPT
             if header != MESSAGE_RECEIPT:
+                # Send appropriate response after processing of request by Model and correctly packing response by prep_response
                 response = prep_response(model.interpret(Wire_Message(header, payload), session_id))
                 send_wire_message(connection, response)
 
@@ -138,6 +154,7 @@ class Controller():
             # wait to accept a connection - blocking call
             (clientsocket, address) = self.server_socket.accept()
 
+            # Allocate new thread to independently and continuously listen to each connected client
             lock = thread.allocate_lock()
             thread.start_new_thread(manage, (clientsocket, lock, counter, self.model))
             print 'Connected with ' + address[0] + ':' + str(address[1])

@@ -6,6 +6,7 @@ import thread
 def login(connection):
     """
     Send user request to login to an already existing account based on the provided username.
+    :param connection: socket connection to send request to
     """
     # Get username
     username = raw_input('Login requires a username: ')
@@ -20,6 +21,7 @@ def login(connection):
 def create_account(connection):
     """
     Send a request to creating a new account with the username provided by the user.
+    :param connection: socket connection to send request to
     """
     # Get username
     username = raw_input('Registering a new account requires a new unique username (max 32 characters): ')
@@ -34,6 +36,7 @@ def create_account(connection):
 def get_list_accounts(connection):
     """
     Send a request for the list of all accounts, with an optional wildcard for matching account usernames.
+    :param connection: socket connection to send request to
     """
     # Get the wildcard
     wildcard = raw_input('Enter a wildcard (max 32 characters) for retrieving usernames (optional) and hit enter: ')
@@ -46,6 +49,9 @@ def get_list_accounts(connection):
 def send_message(connection, username):
     """
     Send the provided message to the specified recipient from this account
+    Recipient is prompted as input in this method while recipient's username is passed as parameter
+    :param connection: socket connection to send request to
+    :param username: username of sender
     """
     # Get the username of the intended recipient
     recipient = raw_input('Recipient: ')
@@ -64,6 +70,8 @@ def send_message(connection, username):
 def delete_account(connection, username):
     """
     Send a request to delete the current account, with user option of forcing deletion
+    :param connection: socket connection to send request to
+    :param username: username of account to be deleted; also the same as sender of deletion request
     """
     # Get user option choice
     force_bool = None
@@ -84,6 +92,11 @@ def delete_account(connection, username):
     return
 
 def send_wire_message(socket, wire_message):
+    """
+    Reusable helper method to encapsulate sending of wire messages
+    :param socket: socket connection to send wire message to
+    :param wire_message: data packed according to wire protocol to be sent to server
+    """
     try:
         socket.send(wire_message)
     except:

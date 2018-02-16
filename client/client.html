@@ -18,15 +18,58 @@
 <font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="socket.html">socket</a><br>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="socket.html">socket</a><br>
 </td><td width="25%" valign=top><a href="sys.html">sys</a><br>
-</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<a href="thread.html">thread</a><br>
+</td><td width="25%" valign=top><a href="time.html">time</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-init"><strong>init</strong></a>()</dt><dd><tt>Connecting&nbsp;the&nbsp;client&nbsp;to&nbsp;the&nbsp;server</tt></dd></dl>
-</td></tr></table>
+<td width="100%"><dl><dt><a name="-exit_program"><strong>exit_program</strong></a>()</dt><dd><tt>Exiting&nbsp;the&nbsp;program&nbsp;involves&nbsp;closing&nbsp;connection&nbsp;and&nbsp;outputting&nbsp;good&nbsp;bye&nbsp;message</tt></dd></dl>
+ <dl><dt><a name="-init"><strong>init</strong></a>()</dt><dd><tt>Connecting&nbsp;the&nbsp;client&nbsp;to&nbsp;the&nbsp;server</tt></dd></dl>
+ <dl><dt><a name="-listen"><strong>listen</strong></a>(lock, connection)</dt><dd><tt>Separate&nbsp;thread&nbsp;for&nbsp;clients&nbsp;to&nbsp;continuously&nbsp;listen&nbsp;for&nbsp;incoming&nbsp;messages&nbsp;and&nbsp;responses<br>
+:param&nbsp;lock:&nbsp;thread&nbsp;lock<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;listen&nbsp;from</tt></dd></dl>
+ <dl><dt><a name="-pack"><strong>pack</strong></a>(...)</dt><dd><tt>Return&nbsp;string&nbsp;containing&nbsp;values&nbsp;v1,&nbsp;v2,&nbsp;...&nbsp;packed&nbsp;according&nbsp;to&nbsp;fmt.</tt></dd></dl>
+ <dl><dt><a name="-prompt_user"><strong>prompt_user</strong></a>()</dt><dd><tt>Primary&nbsp;control&nbsp;logic<br>
+Taking&nbsp;user&nbsp;input&nbsp;and&nbsp;calling&nbsp;appropriate&nbsp;function</tt></dd></dl>
+ <dl><dt><a name="-pull"><strong>pull</strong></a>(lock, connection)</dt><dd><tt>Continuously&nbsp;pull&nbsp;for&nbsp;messages&nbsp;from&nbsp;server<br>
+:param&nbsp;lock:&nbsp;thread&nbsp;lock<br>
+:param&nbsp;connection:&nbsp;socket&nbsp;connection&nbsp;to&nbsp;send&nbsp;pull&nbsp;requests&nbsp;to</tt></dd></dl>
+ <dl><dt><a name="-unpack"><strong>unpack</strong></a>(...)</dt><dd><tt>Unpack&nbsp;the&nbsp;string&nbsp;containing&nbsp;packed&nbsp;C&nbsp;structure&nbsp;data,&nbsp;according&nbsp;to&nbsp;fmt.<br>
+Requires&nbsp;len(string)&nbsp;==&nbsp;calcsize(fmt).</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACCOUNT_LIST</strong> = 272<br>
+<strong>CREATE_ACCOUNT</strong> = 1<br>
+<strong>CREATE_FAILURE</strong> = 4353<br>
+<strong>CREATE_SUCCESS</strong> = 16<br>
+<strong>DELETION_FAILURE</strong> = 65552<br>
+<strong>DELETION_REQUEST</strong> = 4113<br>
+<strong>DELETION_SUCCESS</strong> = 4352<br>
+<strong>DISTRIBUTE_MESSAGE</strong> = 4097<br>
+<strong>LIST_ACCOUNTS</strong> = 257<br>
+<strong>LOGIN_FAILURE</strong> = 4369<br>
+<strong>LOGIN_REQUEST</strong> = 17<br>
+<strong>LOGIN_SUCCESS</strong> = 256<br>
+<strong>MESSAGE_FAILURE</strong> = 65536<br>
+<strong>MESSAGE_PENDING</strong> = 65537<br>
+<strong>MESSAGE_RECEIPT</strong> = 4112<br>
+<strong>MESSAGE_SUCCESS</strong> = 4096<br>
+<strong>PULL_MESSAGES</strong> = 65792<br>
+<strong>SEND_MESSAGE</strong> = 273<br>
+<strong>client_socket</strong> = &lt;socket._socketobject object&gt;<br>
+<strong>logged_in</strong> = False<br>
+<strong>logged_in_user</strong> = None<br>
+<strong>response_headers</strong> = {16: &lt;function create_success&gt;, 256: &lt;function login_success&gt;, 272: &lt;function out_list_accounts&gt;, 4096: &lt;function message_success&gt;, 4097: &lt;function message_received&gt;, 4352: &lt;function deletion_success&gt;, 4353: &lt;function create_failure&gt;, 4369: &lt;function login_failure&gt;, 65536: &lt;function message_failure&gt;, 65537: &lt;function message_pending&gt;, ...}</td></tr></table>
 </body></html>

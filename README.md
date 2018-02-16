@@ -22,7 +22,7 @@ Open a new Terminal/command line instance for the server. Set the `server` direc
 
 ## USAGE
 
-Whether logged in or not, the user in the client window can enter 0 to exit the program. The user can enter 3 to list all users stored by the server (with an optional wildcard for matching desired usernames).
+Whether logged in or not, the user in the client window can enter 0 to exit the program. The user can enter 3 to list all users stored by the server. Listing users takes an optional wildcard, such that only usernames containing the wildcard as a subsequence are returned.
 
 ### Not Logged In
 

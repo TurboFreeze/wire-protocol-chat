@@ -5,7 +5,7 @@ from Wire_Message import Wire_Message
 class Model_262():
     """
     The core model for the server. Handles messages from the Controller
-    with the interpret() function, storing data in a Store class. Implements 
+    with the interpret() function, storing data in a Store class. Implements
     backend functionality of the problem spec (262 design exercise 1)
     """
 
@@ -14,14 +14,14 @@ class Model_262():
     def __init__(self):
         self.data = Store(None)
 
-    
+
     def interpret(self, msg, session_id):
         # takes in a Wire_Message object and returns an optional Wire_Message object
         # for the controller to deal with.
         ret_payload = {}
 
         # Note: python doesn't have switch statements :(
-        
+
         if msg.header == CREATE_ACCOUNT:
             # The server has received a request to create an account
             # we must first check that the account does not already exist,
@@ -67,8 +67,9 @@ class Model_262():
             # fire off a ACCOUNT_LIST message with the relevant data
 
             account_list = []
+            wildcard = msg.payload['wildcard']
             for key in self.data.usernames.keys():
-                if msg.payload['wildcard'] in key:
+                if wildcard.rstrip('\x00') in key.rstrip('\x00'):
                     account_list.append(key)
 
             ret_payload['accounts'] = account_list
@@ -168,7 +169,7 @@ class Model_262():
             pass
 
 
-    
+
     def get_pending_messages(self):
         # checks all pending messages and returns an ordered list of messages that
         # still have to be sent out/haven't been confirmed yet.

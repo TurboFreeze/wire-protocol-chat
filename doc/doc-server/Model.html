@@ -1,0 +1,77 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Model</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Model</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/macbook/dev/CS262/chat-app/server/Model.py">/Users/macbook/dev/CS262/chat-app/server/Model.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Model.html#Model_262">Model_262</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Model_262">class <strong>Model_262</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;core&nbsp;model&nbsp;for&nbsp;the&nbsp;server.&nbsp;Handles&nbsp;messages&nbsp;from&nbsp;the&nbsp;Controller<br>
+with&nbsp;the&nbsp;<a href="#Model_262-interpret">interpret</a>()&nbsp;function,&nbsp;storing&nbsp;data&nbsp;in&nbsp;a&nbsp;Store&nbsp;class.&nbsp;Implements&nbsp;<br>
+backend&nbsp;functionality&nbsp;of&nbsp;the&nbsp;problem&nbsp;spec&nbsp;(262&nbsp;design&nbsp;exercise&nbsp;1)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Model_262-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Model_262-exists"><strong>exists</strong></a>(self, username)</dt></dl>
+
+<dl><dt><a name="Model_262-get_messages"><strong>get_messages</strong></a>(self, key)</dt></dl>
+
+<dl><dt><a name="Model_262-get_pending_messages"><strong>get_pending_messages</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Model_262-interpret"><strong>interpret</strong></a>(self, msg, session_id)</dt></dl>
+
+<dl><dt><a name="Model_262-logged_in"><strong>logged_in</strong></a>(self, username, session_id)</dt></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>data</strong> = None</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>ACCOUNT_LIST</strong> = 272<br>
+<strong>CREATE_ACCOUNT</strong> = 1<br>
+<strong>CREATE_FAILURE</strong> = 4353<br>
+<strong>CREATE_SUCCESS</strong> = 16<br>
+<strong>DELETION_FAILURE</strong> = 65552<br>
+<strong>DELETION_REQUEST</strong> = 4113<br>
+<strong>DELETION_SUCCESS</strong> = 4352<br>
+<strong>DISTRIBUTE_MESSAGE</strong> = 4097<br>
+<strong>LIST_ACCOUNTS</strong> = 257<br>
+<strong>LOGIN_FAILURE</strong> = 4369<br>
+<strong>LOGIN_REQUEST</strong> = 17<br>
+<strong>LOGIN_SUCCESS</strong> = 256<br>
+<strong>MESSAGE_FAILURE</strong> = 65536<br>
+<strong>MESSAGE_PENDING</strong> = 65537<br>
+<strong>MESSAGE_RECEIPT</strong> = 4112<br>
+<strong>MESSAGE_SUCCESS</strong> = 4096<br>
+<strong>PULL_MESSAGES</strong> = 65792<br>
+<strong>SEND_MESSAGE</strong> = 273</td></tr></table>
+</body></html>

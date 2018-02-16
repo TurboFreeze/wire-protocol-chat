@@ -1,0 +1,57 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module Store</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>Store</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/macbook/dev/CS262/chat-app/server/Store.py">/Users/macbook/dev/CS262/chat-app/server/Store.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="Store.html#Store">Store</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Store">class <strong>Store</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;to&nbsp;store&nbsp;the&nbsp;core&nbsp;internal&nbsp;data&nbsp;of&nbsp;the&nbsp;server.&nbsp;For&nbsp;now&nbsp;this&nbsp;is&nbsp;memory-only.<br>
+:param&nbsp;path:&nbsp;The&nbsp;location&nbsp;of&nbsp;the&nbsp;data&nbsp;on&nbsp;disk&nbsp;to&nbsp;load&nbsp;(unused)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Store-__init__"><strong>__init__</strong></a>(self, path)</dt></dl>
+
+<dl><dt><a name="Store-dequeue_message"><strong>dequeue_message</strong></a>(self, from_user, to_user, message)</dt><dd><tt>Remove&nbsp;a&nbsp;pending&nbsp;message&nbsp;that&nbsp;has&nbsp;been&nbsp;successfully&nbsp;delivered&nbsp;<br>
+(or&nbsp;is&nbsp;no&nbsp;longer&nbsp;necessary)<br>
+:param&nbsp;from_user:&nbsp;original&nbsp;message&nbsp;sender&nbsp;(unused)<br>
+:param&nbsp;to_user:&nbsp;message&nbsp;recipient<br>
+:param&nbsp;message:&nbsp;message&nbsp;content</tt></dd></dl>
+
+<dl><dt><a name="Store-queue_message"><strong>queue_message</strong></a>(self, from_user, to_user, message)</dt><dd><tt>Add&nbsp;a&nbsp;message&nbsp;to&nbsp;the&nbsp;pending_messages&nbsp;structure<br>
+:param&nbsp;from_user:&nbsp;message&nbsp;sender&nbsp;(unused)<br>
+:param&nbsp;to_user:&nbsp;message&nbsp;recipient<br>
+:param&nbsp;message:&nbsp;message&nbsp;content</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>active_sessions</strong> = {}</dl>
+
+<dl><dt><strong>pending_messages</strong> = {}</dl>
+
+<dl><dt><strong>usernames</strong> = {}</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

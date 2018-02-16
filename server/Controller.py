@@ -23,6 +23,12 @@ def send_wire_message(connection, wire_message):
 
 def prep_response(content):
     response = pack('!I', content.header)
+    if content.header == CREATE_SUCCESS or content.header == CREATE_FAILURE:
+        response += pack('!32s', content.payload['username'])
+    if content.header == LOGIN_SUCCESS or content.header == LOGIN_FAILURE:
+        response += pack('!32s', content.payload['username'])
+    if content.header == DELETION_SUCCESS or content.header == DELETION_FAILURE:
+        response += pack('!32s', content.payload['username'])
     return response
 
 def manage(connection, loc, session_id, model):
@@ -39,13 +45,14 @@ def manage(connection, loc, session_id, model):
             if header == CREATE_ACCOUNT:
                 payload['username'] = unpack('!32s', received[4:])[0]
             elif header == LOGIN_REQUEST:
-                pass
+                payload['username'] = unpack('!32s', received[4:])[0]
             elif header == LIST_ACCOUNTS:
                 pass
-            elif SEND_MESSAGE:
+            elif header == SEND_MESSAGE:
                 pass
-            elif DELETION_REQUEST:
-                pass
+            elif header == DELETION_REQUEST:
+                payload['username'] = unpack('!32s', received[4:36])[0]
+                payload['forced'] = unpack('?', received[36:])[0]
             else:
                 print 'Unrecognized protocol operation'
 

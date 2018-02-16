@@ -58,16 +58,17 @@ def send_message(connection):
         content = raw_input('Message too long (max 100 characters). Please try again: ')
 
     msg = pack('!I', SEND_MESSAGE) + pack('!32s', recipient) + pack('!100s', content)
+    send_wire_message(connection, msg)
     return
 
-def delete_account(connection):
+def delete_account(connection, username):
     """
     Send a request to delete the current account, with user option of forcing deletion
     """
     # Get user option choice
     force_bool = None
     while force_bool == None:
-        force = raw_input('Force deletion? [y/n/c]: ')
+        force = raw_input('Force deletion? [y/n]: ')
         force = force.strip()
         # Parse the argument
         if force == 'y':
@@ -78,7 +79,8 @@ def delete_account(connection):
             print "Not recognized. Enter 'y' for yes, 'n' for no."
 
     # Send the wire message
-    msg = pack('!I', DELETION_REQUEST) + pack('?', force_bool)
+    msg = pack('!I', DELETION_REQUEST) + pack('!32s', username) + pack('?', force_bool)
+    send_wire_message(connection, msg)
     return
 
 def send_wire_message(socket, wire_message):

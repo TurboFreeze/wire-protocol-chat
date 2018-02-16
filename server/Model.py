@@ -1,23 +1,27 @@
 from protocol_strings import *
 from Store import Store
 from Wire_Message import Wire_Message
-import re # regex for ACCOUNT_LIST
 
 class Model_262():
-    """TODO documentation"""
+    """
+    The core model for the server. Handles messages from the Controller
+    with the interpret() function, storing data in a Store class. Implements 
+    backend functionality of the problem spec (262 design exercise 1)
+    """
 
     data = None
 
     def __init__(self):
         self.data = Store(None)
 
-
-    # takes in a Wire_Message object and returns an optional Wire_Message object
-    # for the controller to deal with.
+    
     def interpret(self, msg, session_id):
+        # takes in a Wire_Message object and returns an optional Wire_Message object
+        # for the controller to deal with.
         ret_payload = {}
 
-        # python doesn't have switch statements :(
+        # Note: python doesn't have switch statements :(
+        
         if msg.header == CREATE_ACCOUNT:
             # The server has received a request to create an account
             # we must first check that the account does not already exist,
@@ -25,11 +29,11 @@ class Model_262():
 
             if self.data.usernames.has_key(msg.user()):
                 # Error: username already exists
-                ret_payload["username"] = msg.user()
+                ret_payload['username'] = msg.user()
                 return Wire_Message(CREATE_FAILURE, ret_payload)
             else:
                 self.data.usernames[msg.user()] = True
-                ret_payload["username"] = msg.user()
+                ret_payload['username'] = msg.user()
                 return Wire_Message(CREATE_SUCCESS, ret_payload)
 
         elif msg.header == LOGIN_REQUEST:
@@ -44,25 +48,17 @@ class Model_262():
                 if (self.data.active_sessions.has_key(msg.user()) and
                     self.data.active_sessions[msg.user()] == session_id):
                     # user was already logged in, just return success.
-                    ret_payload["username"] = msg.user()
+                    ret_payload['username'] = msg.user()
                     return Wire_Message(LOGIN_SUCCESS, ret_payload)
                 else:
-                    ret_payload["username"] = msg.user()
-                    # user was not already logged in, let's update their session
+                    # user was not already logged in, record their session ID
                     self.data.active_sessions[msg.user()] = session_id
-
-                    if self.data.pending_messages.has_key(msg.user()):
-                        # TODO load and fire pending messages?
-                        # or just let the queue checker handle it?
-                        return Wire_Message(LOGIN_SUCCESS, ret_payload)
-                    else:
-                        # no pending messages, just return success
-                        ret_payload["username"] = msg.user()
-                        return Wire_Message(LOGIN_SUCCESS, ret_payload)
+                    ret_payload['username'] = msg.user()
+                    return Wire_Message(LOGIN_SUCCESS, ret_payload)
 
             else:
                 # user does not have an account! return failure.
-                ret_payload["username"] = msg.user()
+                ret_payload['username'] = msg.user()
                 return Wire_Message(LOGIN_FAILURE, ret_payload)
 
         elif msg.header == LIST_ACCOUNTS:
@@ -72,28 +68,28 @@ class Model_262():
 
             account_list = []
             for key in self.data.usernames.keys():
-                if re.match(msg.payload["wildcard"], key) != None:
+                if msg.payload['wildcard'] in key:
                     account_list.append(key)
 
-            ret_payload["accounts"] = account_list
-            ret_payload["wildcard"] = msg.payload["wildcard"]
+            ret_payload['accounts'] = account_list
+            ret_payload['wildcard'] = msg.payload['wildcard']
             return Wire_Message(ACCOUNT_LIST, ret_payload)
 
 
         elif msg.header == SEND_MESSAGE:
             # The server has received a request to send a message to some user
-            # from some user. Check the payload for A) correct "from" user,
-            # B) correct "to" user, and C) "to" user login status
-            # if "to" user is logged in, tell controller to fire off
+            # from some user. Check the payload for A) correct 'from' user,
+            # B) correct 'to' user, and C) 'to' user login status
+            # if 'to' user is logged in, tell controller to fire off
             # DISTRIBUTE_MESSAGE. (doesn't count until we get a
             # MESSAGE_RECEIPT confirmation)
             # otherwise, queue the message.
             # After all this is done, tell the controller to fire a
-            # MESSAGE_STATUS_RESPONSE to the "from" user with
+            # MESSAGE_STATUS_RESPONSE to the 'from' user with
             # the relevant payload data
-            from_user = msg.payload["from"]
+            from_user = msg.payload['from']
             if self.exists(from_user) and self.logged_in(from_user, session_id):
-                to_user = msg.payload["to"]
+                to_user = msg.payload['to']
                 if self.exists(to_user):
                     # to simplify, all messages are queued. Then the controller
                     # just asks for what messages to send every tick.
@@ -101,30 +97,28 @@ class Model_262():
                     # and only removes a message from the queue when it gets
                     # a confirmation that it has been received.
 
-                    self.data.queue_message(from_user, to_user, msg.payload["message"])
-
-                    # TODO message hash?
-                    ret_payload["message"] = msg.payload["message"]
+                    self.data.queue_message(from_user, to_user, msg.payload['message'])
+                    ret_payload['message'] = msg.payload['message']
                     return Wire_Message(MESSAGE_PENDING, ret_payload)
 
                 else:
-                    # recipient doesn't exist, fire controller
-                    ret_payload["to"] = to_user
-                    ret_payload["from"] = from_user
+                    # recipient doesn't exist!
+                    ret_payload['to'] = to_user
+                    ret_payload['from'] = from_user
                     return Wire_Message(MESSAGE_FAILURE, ret_payload)
             else:
                 # improper sender - isn't logged in!
-                # (includes "account doesn't exist")
-                ret_payload["username"] = msg.user()
+                # (includes 'account doesn't exist')
+                ret_payload['username'] = msg.user()
                 return Wire_Message(LOGIN_FAILURE, ret_payload)
 
 
         elif msg.header == MESSAGE_RECEIPT:
             # client confirms receipt of message. If the message was in the
             # pending pool, delete it.
-            self.data.dequeue_message(msg.payload["from_user"],
+            self.data.dequeue_message(msg.payload['from_user'],
                                       msg.user(),
-                                      msg.payload["message"])
+                                      msg.payload['message'])
 
 
         elif msg.header == DELETION_REQUEST:
@@ -132,17 +126,17 @@ class Model_262():
             # if there are no pending messages for him/her, execute and send a
             # ACCOUNT_DELETION_RESPONSE
             #
-            # If there are pending messages, but the "force" flag is included
+            # If there are pending messages, but the 'force' flag is included
             # in the payload, execute and send a
             # ACCOUNT_DELETION_RESPONSE
             #
-            # If there are pending messages and the "force" flag is not present,
+            # If there are pending messages and the 'force' flag is not present,
             # return ACCOUNT_DELETION_RESPONSE with the relevant
             # warning and do not delete.
 
             forced = False
-            if msg.payload.has_key("forced"):
-                forced = msg.payload["forced"]
+            if msg.payload.has_key('forced'):
+                forced = msg.payload['forced']
 
 
             if (self.data.pending_messages.has_key(msg.user()) and
@@ -153,11 +147,11 @@ class Model_262():
                     self.data.usernames[msg.user()] = None
                     self.data.active_sessions[msg.user()] = None
 
-                    ret_payload["username"] = msg.user()
+                    ret_payload['username'] = msg.user()
                     return Wire_Message(DELETION_SUCCESS, ret_payload)
                 else:
                     # Error! you have pending messages.
-                    ret_payload["username"] = msg.user()
+                    ret_payload['username'] = msg.user()
                     return Wire_Message(DELETION_FAILURE, ret_payload)
 
             else:
@@ -166,29 +160,30 @@ class Model_262():
                 self.data.usernames[msg.user()] = None
                 self.data.active_sessions[msg.user()] = None
 
-                ret_payload["username"] = msg.user()
+                ret_payload['username'] = msg.user()
                 return Wire_Message(DELETION_SUCCESS, ret_payload)
 
         else:
-            # TODO default
-            print "error"
+            print 'Error: message does not adhere to the Wire Protocol.'
             pass
 
 
-    # checks all pending messages and returns an ordered list of messages that
-    # still have to be sent out/haven't been confirmed yet.
+    
     def get_pending_messages(self):
+        # checks all pending messages and returns an ordered list of messages that
+        # still have to be sent out/haven't been confirmed yet.
         ret_list = []
         for key in self.data.pending_messages.keys():
             for message in self.data.pending_messages[key]:
                 payload = {}
-                payload["username"] = key
-                payload["message"] = message
+                payload['username'] = key
+                payload['message'] = message
                 ret_list.append(Wire_Message(DISTRIBUTE_MESSAGE, payload))
 
         return ret_list
 
     def get_messages(self, key):
+        # Get pending messages in a raw format
         try:
             return self.data.pending_messages[key]
         except:

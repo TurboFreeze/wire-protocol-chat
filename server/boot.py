@@ -1,6 +1,4 @@
 from Controller import *
 
-
-
-# TODO
+# start the controller, port 2620
 c = Controller('', 2620)

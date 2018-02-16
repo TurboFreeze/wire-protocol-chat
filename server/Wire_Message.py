@@ -1,17 +1,20 @@
 
 class Wire_Message():
-    # TODO documentation
+    """
+    Class to standardize Wire Protocol messages internally.
+    :param header: Wire Protocol header (from protocol_strings)
+    :param payload: message content
+    """
     
     header = None
     payload = {}
     
-    # header is a protocol_strings element
     def __init__(self, header, payload):
         self.header = header
         self.payload = payload
     
-    def user(self): # TODO is this the best way to do this?
-        return self.payload["username"]
+    def user(self):
+        return self.payload['username']
     
     def __str__(self):
         print self.username()

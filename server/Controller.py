@@ -1,9 +1,13 @@
-'''
-    TODO Documentation
-    some code from
+"""
+    This file contains helper functions and the main Controller class for the 
+    messaging server. The Controller opens the server's socket and handles
+    incoming connections from clients. It adheres to the wire protocol,
+    updating the model and continually distributing pending messages.
+    
+    Note: some code from
             binarytides.com/python-socket-server-code-example/
             docs.python.org/2/howto/sockets.html
-'''
+"""
 
 from Model import Model_262
 from Wire_Message import Wire_Message
@@ -92,6 +96,7 @@ def manage(connection, lock, session_id, model):
                 payload['username'] = unpack('!32s', received[4:36])[0]
                 payload['from_user'] = 'Anon'
                 payload['message'] = unpack('!100s', received[36:])[0]
+                model.interpret(Wire_Message(header, payload), session_id)
             elif header == PULL_MESSAGES:
                 try:
                     username = unpack('!32s', received[4:])[0]
@@ -117,9 +122,14 @@ def manage(connection, lock, session_id, model):
                 send_wire_message(connection, response)
 
 class Controller():
-    # TODO all this socket stuff will have to be cleaned up
-    # and documented once the client is functional.
-
+    """
+    Server Controller class
+    :param host: the host to run the server
+    :param port: the port to run the server
+    
+    Creates the server socket, and continually handles connections and wire
+    messages adhering to the protocol. 
+    """
 
     model = None
     server_socket = None
@@ -154,14 +164,11 @@ class Controller():
             # wait to accept a connection - blocking call
             (clientsocket, address) = self.server_socket.accept()
 
-            # Allocate new thread to independently and continuously listen to each connected client
+            # Allocate new thread to independently and continuously listen to 
+            # each connected client
             lock = thread.allocate_lock()
             thread.start_new_thread(manage, (clientsocket, lock, counter, self.model))
             print 'Connected with ' + address[0] + ':' + str(address[1])
             counter += 1
 
         self.server_socket.close()
-
-
-    # TODO periodically check the model for pending messages to logged-in accounts
-    # watch out for double sends if we haven't received a confirmation yet.

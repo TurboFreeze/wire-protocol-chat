@@ -1,12 +1,14 @@
 # chat-app
 
+**NOTE** This README has been updated to allow for connection over the internet. Only this document was changed; **NO CODE WAS CHANGED**.
+
 Chat application with custom wire protocol. Instructions for usage and installation are in this important README file while an overview of the design is contained in DESIGN.pdf and the rest of the pydoc documentation is in the `doc` directory.
 
 ## INSTALLATION AND LAUNCH
 
 ### Requirements
 
-Requires `Python v2.7`. Designed for Linux/MacOS operating systems. Multiple clients in separate terminals can connect to the same server, all on the same machine.
+Requires `Python v2.7`. Designed for Linux/MacOS operating systems. Multiple clients in separate terminals can connect to the same server. The client and server can both run on the same machine **OR** clients on the local machine terminal can connect to `262.squire.io:2620`, where a server instance is currently running.
 
 ### Download
 
@@ -14,7 +16,11 @@ Hosted on code.harvard.edu repo. Clone or download from https://code.harvard.edu
 
 ### Client
 
-Open a new Terminal/command line instance for each client instance. Set the `client` directory as the working directory and run `./start.sh`.
+Open a new Terminal/command line instance for each client instance. Set the `client` directory as the working directory. Run the exact following command in the client Terminal:
+```
+python2.7 262.squire.io 2620
+```
+Alternatively, you can use an IP address of your choice for a machine where the server is running (however, do this at your own risk; we only guarantee support for `262.squire.io:2620`).
 
 ### Server
 

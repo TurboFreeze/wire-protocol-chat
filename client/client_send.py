@@ -2,6 +2,7 @@ from client_receive import *
 from protocol_strings import *
 from struct import pack, unpack
 import thread
+import sys
 
 def login(connection):
     """

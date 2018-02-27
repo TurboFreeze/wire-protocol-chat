@@ -144,9 +144,9 @@ class Model_262():
                 len(self.data.pending_messages[msg.user()]) > 0):
                 # there are pending messages.
                 if forced:
-                    self.data.pending_messages[msg.user()] = None
-                    self.data.usernames[msg.user()] = None
-                    self.data.active_sessions[msg.user()] = None
+                    del self.data.pending_messages[msg.user()]
+                    del self.data.usernames[msg.user()]
+                    del self.data.active_sessions[msg.user()]
 
                     ret_payload['username'] = msg.user()
                     return Wire_Message(DELETION_SUCCESS, ret_payload)
@@ -157,9 +157,9 @@ class Model_262():
 
             else:
                 # No pending messages, go ahead with deletion
-                self.data.pending_messages[msg.user()] = None
-                self.data.usernames[msg.user()] = None
-                self.data.active_sessions[msg.user()] = None
+                del self.data.pending_messages[msg.user()]
+                del self.data.usernames[msg.user()]
+                del self.data.active_sessions[msg.user()]
 
                 ret_payload['username'] = msg.user()
                 return Wire_Message(DELETION_SUCCESS, ret_payload)

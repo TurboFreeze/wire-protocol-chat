@@ -1,7 +1,5 @@
 # chat-app
 
-**NOTE** This README has been updated to allow for connection over the internet. Only this document was changed; **NO CODE WAS CHANGED**.
-
 Chat application with custom wire protocol. Instructions for usage and installation are in this important README file while an overview of the design is contained in DESIGN.pdf and the rest of the pydoc documentation is in the `doc` directory.
 
 ## INSTALLATION AND LAUNCH
@@ -41,3 +39,7 @@ Select 1 to login to the account that was just created, or into an account that 
 Once logged in, entering 1 can send a message to the desired recipient. The user will be prompted to enter a username for an existing user and the message itself.
 
 The logged in user can also choose to delete their own account. Selecting `y` for yes forces deletion regardless of whether or not there are pending messages for that user, while `n` will only delete if the message queue for that user is empty.
+
+## Technical Overview
+
+For technical details about this software, please refer to the included `pydoc` documentation in the `doc` directory. A **complete wire protocol** was defined and implemented (see op codes in the documentation). Communication between machines is achieved using socket connections. Every wire message is packed and unpacked using the corresponding utility from Python's `struct` module: `pack()` for sending messages and `unpack()` for receiving messages according to the wire protocol.
